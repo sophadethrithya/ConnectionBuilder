@@ -65,6 +65,8 @@ class App extends Component {
         super(props)
 
         const socket = new WebSocket('ws://localhost:8080/chat')
+        var authorName = ""
+        var participant = [];
 
         this.state = {
             messages: [],
@@ -76,6 +78,12 @@ class App extends Component {
 
         socket.onopen = () => {
             console.log('Succesfully connected to chat server at ws://localhost:8080/chat.')
+            if(authorName === ""){
+                authorName = prompt('What is your name? or enter anonymous ')
+                participant.push(authorName)
+
+                }
+
         }
 
         socket.onclose = () => {
@@ -93,13 +101,17 @@ class App extends Component {
                 case 'message':
                     this.setState(state => ({
                         messages: [...state.messages, { text: data.text, author: data.author }]
+
                     }))
                     this.scrollToBottom()
                     break
                 case 'joinChat':
+
                     this.setState(state => ({
                         messages: data.previousMessages,
-                        author: data.author
+//                        author: data.author
+                        author: authorName
+
                     }))
                     this.scrollToBottom()
                     break
@@ -121,7 +133,9 @@ class App extends Component {
     handleChange = event => {
         this.setState({
             text: event.target.value
+
         })
+        console.log("here" + event.target.value)
     }
 
     handleEnter = event => {
@@ -206,7 +220,7 @@ class App extends Component {
                 <AppBar position="fixed" className={classes.appBar}>
                     <Toolbar>
                         <Typography color="inherit" className={classes.grow} variant="h6">
-                            Simple Chat
+                            Connection Builder
                         </Typography>
                     </Toolbar>
                 </AppBar>
